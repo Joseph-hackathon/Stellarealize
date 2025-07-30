@@ -1,0 +1,18 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#38bdf8" />
+      <stop offset="100%" style="stop-color:#0369a1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="32" height="32" rx="8" fill="#0f172a"/>
+  
+  <!-- Star -->
+  <g transform="translate(16, 16)">
+    <path d="M 0 -8 L 2 -2 L 8 -2 L 3.5 1 L 5.5 7 L 0 4 L -5.5 7 L -3.5 1 L -8 -2 L -2 -2 Z" 
+          fill="url(#starGrad)"/>
+    <circle cx="0" cy="0" r="2" fill="#38bdf8"/>
+  </g>
+</svg>

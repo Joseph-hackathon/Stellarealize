@@ -1,0 +1,63 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "name": "stellarealize",
+  "alias": ["stellarealize.vercel.app"],
+  "regions": ["iad1", "sfo1"],
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next@latest"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "env": {
+    "STELLAR_NETWORK": "TESTNET",
+    "STELLAR_RPC_URL": "https://horizon-testnet.stellar.org",
+    "SOROBAN_RPC_URL": "https://soroban-testnet.stellar.org"
+  },
+  "build": {
+    "env": {
+      "STELLAR_NETWORK": "TESTNET"
+    }
+  },
+  "functions": {
+    "pages/api/**/*.ts": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/app",
+      "destination": "/dashboard"
+    },
+    {
+      "source": "/trade",
+      "destination": "/swap"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ]
+}

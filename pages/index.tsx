@@ -27,22 +27,32 @@ export default function Home() {
     {
       icon: <Zap className="w-8 h-8" />,
       title: 'Lightning Fast',
-      description: 'Execute cross-chain swaps in seconds with Stellar\'s fast settlement and 1inch aggregation'
+      description: 'Execute cross-chain swaps in seconds with Stellar\'s 3-5 second settlement and Soroban smart contracts'
     },
     {
       icon: <Shield className="w-8 h-8" />,
-      title: 'Battle Tested',
-      description: 'Built on Stellar\'s proven infrastructure with institutional-grade security'
+      title: 'Institutional Grade',
+      description: 'Built on Stellar\'s proven infrastructure with enterprise-level security and compliance'
     },
     {
       icon: <Globe className="w-8 h-8" />,
-      title: 'Cross-Chain',
-      description: 'Seamlessly bridge assets between Stellar and major blockchain networks'
+      title: 'Cross-Chain Bridge',
+      description: 'Seamlessly bridge assets between Stellar Network and Ethereum, BSC, Polygon, and more'
     },
     {
       icon: <TrendingUp className="w-8 h-8" />,
       title: 'Best Rates',
-      description: 'Access the deepest liquidity across DEXes for optimal swap rates'
+      description: 'Access the deepest liquidity across Stellar DEX and aggregated cross-chain pools'
+    },
+    {
+      icon: <Star className="w-8 h-8" />,
+      title: 'Soroban Smart Contracts',
+      description: 'Deploy and interact with smart contracts on Stellar\'s Soroban platform'
+    },
+    {
+      icon: <BarChart3 className="w-8 h-8" />,
+      title: 'Advanced Analytics',
+      description: 'Comprehensive analytics and real-time data for the Stellar Network ecosystem'
     }
   ]
 
@@ -54,12 +64,12 @@ export default function Home() {
   ]
 
   const networkLogos = [
-    { name: 'Stellar', logo: '⭐' },
-    { name: 'Ethereum', logo: '♦️' },
-    { name: 'BSC', logo: '🟡' },
-    { name: 'Polygon', logo: '🟣' },
-    { name: 'Arbitrum', logo: '🔵' },
-    { name: 'Optimism', logo: '🔴' }
+    { name: 'Stellar', logo: '⭐', description: 'Fast & Secure' },
+    { name: 'Ethereum', logo: '♦️', description: 'Smart Contracts' },
+    { name: 'BSC', logo: '🟡', description: 'Low Fees' },
+    { name: 'Polygon', logo: '🟣', description: 'Scalable' },
+    { name: 'Arbitrum', logo: '🔵', description: 'Layer 2' },
+    { name: 'Optimism', logo: '🔴', description: 'Optimistic' }
   ]
 
   return (
@@ -226,11 +236,12 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {networkLogos.map((network, index) => (
                 <div key={index} className="card-gradient p-6 rounded-xl text-center hover:scale-110 transition-transform duration-300">
-                  <div className="text-4xl mb-2">{network.logo}</div>
-                  <div className="text-sm font-medium text-gray-300">{network.name}</div>
+                  <div className="text-4xl mb-3">{network.logo}</div>
+                  <div className="text-sm font-bold text-white mb-1">{network.name}</div>
+                  <div className="text-xs text-gray-400">{network.description}</div>
                 </div>
               ))}
             </div>

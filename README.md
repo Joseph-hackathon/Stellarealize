@@ -1,226 +1,294 @@
-# Stellarealize
+# Stellarealize 🌟
 
-![Stellarealize Logo](./public/logo.svg)
+**The Premier DeFi Platform for Stellar Network**
 
-**Stellarealize** is a cutting-edge DeFi platform that connects the Stellar Network to the global financial ecosystem, enabling seamless cross-chain swaps and institutional-grade financial tools.
+Stellarealize is a comprehensive DeFi platform that connects Stellar Network to the global financial ecosystem, providing cross-chain swaps, analytics, and institutional-grade infrastructure.
 
 ## 🌟 Features
 
-### 🚀 Cross-Chain Swaps
-- **Seamless Bridge**: Connect Stellar Network with Ethereum, BSC, Polygon, and other major blockchains
-- **Best Rates**: Powered by 1inch aggregation for optimal swap rates
-- **Institutional Grade**: Built with security-first approach and audited smart contracts
+### Core Platform
+- **Cross-Chain Swaps**: Seamlessly swap tokens between Stellar and major blockchain networks
+- **Stellar Network Integration**: Full support for Stellar testnet and mainnet
+- **Soroban Smart Contracts**: Deploy and interact with smart contracts on Stellar's Soroban platform
+- **Advanced Analytics**: Comprehensive dashboard with real-time Stellar Network statistics
+- **Wallet Integration**: Connect Stellar accounts with testnet funding support
 
-### 📊 Comprehensive Dashboard
-- **Real-time Analytics**: Track TVL, volume, and ecosystem statistics
-- **Transaction History**: Monitor all swaps, bridges, and DeFi activities
-- **Network Stats**: Stellar Network health and performance metrics
+### Cross-Chain Bridge
+- **Multi-Network Support**: Ethereum, BSC, Polygon, Arbitrum, Optimism
+- **Institutional Security**: Enterprise-grade bridge infrastructure
+- **Real-time Monitoring**: Track bridge transactions and network status
 
-### 🔗 Stellar Network Integration
-- **Native DEX**: Leverage Stellar's built-in decentralized exchange
-- **Soroban Contracts**: Smart contract functionality on Stellar
-- **Fast & Cheap**: 3-5 second settlements with minimal fees
-
-## 🛠 Technology Stack
-
-### Frontend
-- **Next.js 14** - React framework with app router
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first CSS framework
-- **Lucide React** - Beautiful icon library
-- **Recharts** - Data visualization
-
-### Blockchain Integration
-- **Stellar SDK** - Official Stellar Network JavaScript SDK
-- **1inch API** - DEX aggregation and cross-chain swaps
-- **Soroban RPC** - Stellar smart contract interaction
-
-### APIs & Services
-- **1inch Swap API** - Token swapping aggregation
-- **1inch History API** - Transaction history and analytics
-- **1inch Fusion+** - Cross-chain bridge capabilities
-- **Stellar Horizon** - Stellar Network data and transactions
+### Analytics & Dashboard
+- **Network Statistics**: Live Stellar Network metrics and performance data
+- **Trading Analytics**: Volume, transactions, and asset performance tracking
+- **Bridge Analytics**: Cross-chain bridge usage and performance metrics
+- **Interactive Charts**: Real-time data visualization with Recharts
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Node.js 18+ 
 - npm or yarn
-- Git
+- Stellar testnet account (optional)
 
 ### Installation
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/your-username/stellarealize.git
+git clone https://github.com/your-org/stellarealize.git
 cd stellarealize
 ```
 
 2. **Install dependencies**
 ```bash
 npm install
-# or
-yarn install
 ```
 
-3. **Environment setup**
+3. **Set up environment variables**
 ```bash
 cp .env.example .env.local
 ```
 
-Add your API keys to `.env.local`:
+Add your configuration:
 ```env
-NEXT_PUBLIC_ONE_INCH_API_KEY=your_1inch_api_key
-STELLAR_NETWORK=TESTNET
+NEXT_PUBLIC_STELLAR_NETWORK=testnet
+NEXT_PUBLIC_HORIZON_URL=https://horizon-testnet.stellar.org
+NEXT_PUBLIC_SOROBAN_URL=https://soroban-testnet.stellar.org
+STELLAR_BRIDGE_CONTRACT_ID=your_bridge_contract_id
 ```
 
-4. **Run development server**
+4. **Run the development server**
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-5. **Open in browser**
-Visit [http://localhost:3000](http://localhost:3000)
+5. **Open your browser**
+Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 🏗 Project Structure
+## 🏗️ Architecture
 
+### Frontend
+- **Next.js 14**: React framework with TypeScript
+- **Tailwind CSS**: Utility-first CSS framework
+- **Recharts**: Data visualization library
+- **Lucide React**: Icon library
+
+### Stellar Integration
+- **@stellar/stellar-sdk**: Official Stellar SDK
+- **Soroban RPC**: Smart contract integration
+- **Horizon API**: Stellar network data
+
+### Key Components
+```
+components/
+├── Layout/           # Header, Footer, Navigation
+├── Dashboard/        # Analytics and statistics
+├── Swap/            # Cross-chain swap interface
+├── Wallet/          # Stellar wallet integration
+└── Logo.tsx         # Stellar-themed logo
+
+lib/
+├── stellar-testnet.ts    # Stellar Network integration
+├── stellar.ts            # Legacy Stellar utilities
+├── oneInch.ts           # Cross-chain aggregation
+└── types.ts             # TypeScript definitions
+```
+
+## 🌐 Stellar Network Integration
+
+### Testnet Setup
+The platform includes full Stellar testnet integration:
+
+```typescript
+import { stellarTestnetService } from '@/lib/stellar-testnet'
+
+// Create a new testnet account
+const account = await stellarTestnetService.createTestnetAccount()
+
+// Get account information
+const accountInfo = await stellarTestnetService.getAccountInfo(publicKey)
+
+// Send payment
+const transaction = await stellarTestnetService.sendPayment(
+  senderSecret,
+  receiverPublicKey,
+  amount
+)
+```
+
+### Smart Contract Deployment
+Deploy Soroban smart contracts on Stellar:
+
+```typescript
+// Deploy a contract
+const { contractId, transactionHash } = await stellarTestnetService.deployContract(
+  wasmHash,
+  deployerSecret
+)
+
+// Call contract method
+const result = await stellarTestnetService.callContract(
+  contractId,
+  'method_name',
+  [arg1, arg2]
+)
+```
+
+### Cross-Chain Bridge
+Bridge assets between Stellar and other networks:
+
+```typescript
+// Bridge to Ethereum
+const bridgeTx = await stellarTestnetService.bridgeToEthereum(
+  stellarAsset,
+  amount,
+  ethAddress,
+  senderSecret
+)
+
+// Bridge from Ethereum
+const claimTx = await stellarTestnetService.bridgeFromEthereum(
+  ethTxHash,
+  stellarAddress,
+  recipientSecret
+)
+```
+
+## 📊 Analytics Dashboard
+
+The platform provides comprehensive analytics for the Stellar Network ecosystem:
+
+### Network Statistics
+- Total accounts and transactions
+- Ledger version and network load
+- Soroban contracts deployed
+- Active validators count
+
+### Trading Analytics
+- 24h/7d/30d volume tracking
+- Transaction count and average trade size
+- Top trading assets and pairs
+- Price changes and market data
+
+### Bridge Analytics
+- Cross-chain bridge volume
+- Bridge transaction times
+- Active bridge networks
+- Asset distribution
+
+## 🔧 Development
+
+### Project Structure
 ```
 stellarealize/
-├── components/           # React components
-│   ├── Layout/          # Header, Footer, Navigation
-│   ├── Dashboard/       # Dashboard-specific components
-│   └── Swap/           # Swap interface components
-├── lib/                # Utility libraries
-│   ├── stellar.ts      # Stellar Network integration
-│   ├── oneInch.ts      # 1inch API integration
-│   └── types.ts        # TypeScript type definitions
-├── pages/              # Next.js pages
-│   ├── index.tsx       # Homepage
-│   ├── dashboard.tsx   # Analytics dashboard
-│   └── swap.tsx        # Cross-chain swap
-├── public/             # Static assets
-└── styles/             # Global CSS styles
+├── components/          # React components
+├── lib/               # Utilities and services
+├── pages/             # Next.js pages
+├── public/            # Static assets
+├── styles/            # Global styles
+└── types/             # TypeScript types
 ```
 
-## 🌐 Deployment
-
-### Vercel Deployment (Recommended)
-
-1. **Connect to Vercel**
+### Available Scripts
 ```bash
-npm i -g vercel
-vercel login
-vercel
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
 ```
 
-2. **Environment Variables**
-Set the following in Vercel dashboard:
-- `NEXT_PUBLIC_ONE_INCH_API_KEY`
-- `STELLAR_NETWORK`
-- `STELLAR_RPC_URL`
-- `SOROBAN_RPC_URL`
-
-3. **Deploy**
-```bash
-vercel --prod
+### Environment Variables
+```env
+NEXT_PUBLIC_STELLAR_NETWORK=testnet|mainnet
+NEXT_PUBLIC_HORIZON_URL=https://horizon-testnet.stellar.org
+NEXT_PUBLIC_SOROBAN_URL=https://soroban-testnet.stellar.org
+STELLAR_BRIDGE_CONTRACT_ID=your_contract_id
 ```
 
-### Manual Deployment
+## 🌟 Stellar Network Features
 
-1. **Build the project**
-```bash
-npm run build
-```
+### Account Management
+- Create testnet accounts with automatic funding
+- Import existing Stellar accounts
+- Real-time balance updates
+- Multi-asset support
 
-2. **Start production server**
-```bash
-npm start
-```
+### Transaction Operations
+- Native XLM payments
+- Custom asset transfers
+- Smart contract interactions
+- Cross-chain bridge transactions
 
-## 🔧 Configuration
+### Network Monitoring
+- Real-time transaction streaming
+- Network performance metrics
+- Ledger information
+- Fee pool monitoring
 
-### Stellar Network
-- **Testnet**: Used in development
-- **Mainnet**: Used in production
-- **Custom RPC**: Configure custom Stellar Horizon/Soroban endpoints
+## 🔒 Security
 
-### 1inch Integration
-- **Swap API**: Token aggregation and routing
-- **History API**: Transaction tracking
-- **Fusion+**: Cross-chain bridge functionality
+### Stellar Network Security
+- Official Stellar SDK integration
+- Secure key management
+- Transaction signing and validation
+- Network consensus verification
 
-## 📈 Features in Detail
+### Application Security
+- Environment variable protection
+- Input validation and sanitization
+- Secure wallet connections
+- HTTPS enforcement
 
-### Cross-Chain Swaps
-- Support for 12+ blockchain networks
-- Automated best route finding
-- MEV protection with 1inch Fusion+
-- Real-time price impact calculation
+## 📈 Performance
 
-### Stellar Network Features
-- Native XLM trading pairs
-- Stellar Asset Contract (SAC) token support
-- Soroban smart contract integration
-- Built-in DEX order book access
+### Stellar Network Performance
+- 3-5 second transaction finality
+- 1000+ transactions per second
+- Sub-cent transaction fees
+- 99.99% network uptime
 
-### Analytics Dashboard
-- Total Value Locked (TVL) tracking
-- 24h volume and transaction metrics
-- Cross-chain bridge volume
-- Stellar ecosystem statistics
-
-## 🔐 Security
-
-- **Audited Contracts**: All smart contracts are professionally audited
-- **Non-Custodial**: Users maintain full control of their assets
-- **Secure APIs**: All API communications are encrypted
-- **Best Practices**: Following industry security standards
+### Application Performance
+- Server-side rendering with Next.js
+- Optimized bundle sizes
+- Lazy loading components
+- Real-time data updates
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions to Stellarealize! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
+### Development Setup
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+### Code Style
+- TypeScript for type safety
+- ESLint for code quality
+- Prettier for formatting
+- Conventional commits
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🌟 Acknowledgments
 
-- **Stellar Development Foundation** - For the amazing Stellar Network
-- **1inch** - For providing excellent DEX aggregation APIs
-- **Etherealize** - Original inspiration for the platform design
-- **Vercel** - For seamless deployment platform
+- [Stellar Development Foundation](https://stellar.org/) for the amazing blockchain infrastructure
+- [Soroban](https://soroban.stellar.org/) for smart contract capabilities
+- [Etherealize](https://www.etherealize.com/) for design inspiration
+- [Next.js](https://nextjs.org/) for the React framework
+- [Tailwind CSS](https://tailwindcss.com/) for the styling system
 
-## 🔗 Links
+## 📞 Support
 
-- **Website**: [stellarealize.vercel.app](https://stellarealize.vercel.app)
 - **Documentation**: [docs.stellarealize.com](https://docs.stellarealize.com)
 - **Discord**: [discord.gg/stellarealize](https://discord.gg/stellarealize)
 - **Twitter**: [@stellarealize](https://twitter.com/stellarealize)
-
-## 📊 Network Support
-
-### Supported Blockchains
-- 🌟 **Stellar Network** (Native)
-- ♦️ **Ethereum** (via 1inch)
-- 🟡 **Binance Smart Chain** (via 1inch)
-- 🟣 **Polygon** (via 1inch)
-- 🔵 **Arbitrum** (via 1inch)
-- 🔴 **Optimism** (via 1inch)
-
-### Bridge Protocols
-- **1inch Fusion+** - Cross-chain aggregation
-- **Stellar Anchors** - Stellar-specific bridges
-- **Custom Bridges** - Direct network integrations
+- **Email**: support@stellarealize.com
 
 ---
 
-**Built with ❤️ for the Stellar Network ecosystem**
+**Built with ❤️ for the Stellar Network community**

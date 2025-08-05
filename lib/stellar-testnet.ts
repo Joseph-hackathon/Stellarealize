@@ -290,27 +290,20 @@ export class StellarTestnetService {
     return () => {};
   }
 
-  // Network Information
+  // Network Information - Temporarily simplified for Vercel deployment
   async getNetworkInfo(): Promise<{
     ledgerVersion: number;
     baseFee: number;
     baseReserve: number;
     networkPassphrase: string;
   }> {
-    try {
-      const serverInfo = await this.server.loadAccount('GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF');
-      const ledger = await this.server.ledgers().order('desc').limit(1).call();
-      
-      return {
-        ledgerVersion: Number(ledger.records[0].sequence),
-        baseFee: BASE_FEE,
-        baseReserve: 1, // Stellar base reserve
-        networkPassphrase: this.network.networkPassphrase
-      };
-    } catch (error) {
-      console.error('Failed to get network info:', error);
-      throw error;
-    }
+    // TODO: Implement proper network info for Vercel deployment
+    return {
+      ledgerVersion: 1,
+      baseFee: BASE_FEE,
+      baseReserve: 1, // Stellar base reserve
+      networkPassphrase: this.network.networkPassphrase
+    };
   }
 
   // Utility Methods

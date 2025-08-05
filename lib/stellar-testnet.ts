@@ -277,25 +277,17 @@ export class StellarTestnetService {
     }
   }
 
-  // Real-time Data Streaming
+  // Real-time Data Streaming - Temporarily disabled for Vercel deployment
   streamPayments(accountId: string, onPayment: (payment: any) => void): () => void {
-    const eventSource = this.server.payments().forAccount(accountId).cursor('now').stream({
-      onmessage: (message) => {
-        onPayment(message);
-      }
-    });
-
-    return eventSource;
+    // TODO: Implement proper streaming for Vercel deployment
+    console.log('Streaming payments disabled for deployment');
+    return () => {};
   }
 
   streamTrades(onTrade: (trade: any) => void): () => void {
-    const eventSource = this.server.trades().cursor('now').stream({
-      onmessage: (message) => {
-        onTrade(message);
-      }
-    });
-
-    return eventSource;
+    // TODO: Implement proper streaming for Vercel deployment
+    console.log('Streaming trades disabled for deployment');
+    return () => {};
   }
 
   // Network Information

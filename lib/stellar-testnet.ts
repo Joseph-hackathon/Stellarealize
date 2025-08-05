@@ -285,7 +285,7 @@ export class StellarTestnetService {
       }
     });
 
-    return () => eventSource.close();
+    return eventSource;
   }
 
   streamTrades(onTrade: (trade: any) => void): () => void {
@@ -295,7 +295,7 @@ export class StellarTestnetService {
       }
     });
 
-    return () => eventSource.close();
+    return eventSource;
   }
 
   // Network Information

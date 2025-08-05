@@ -281,3 +281,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Etherealize](https://www.etherealize.com/) for design inspiration
 - [Next.js](https://nextjs.org/) for the React framework
 - [Tailwind CSS](https://tailwindcss.com/) for the styling system
+# Vercel deployment fix

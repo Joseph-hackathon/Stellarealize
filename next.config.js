@@ -3,16 +3,19 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   env: {
-    STELLAR_NETWORK: process.env.NODE_ENV === 'production' ? 'MAINNET' : 'TESTNET',
-    STELLAR_RPC_URL: process.env.NODE_ENV === 'production' 
-      ? 'https://horizon.stellar.org'
-      : 'https://horizon-testnet.stellar.org',
-    SOROBAN_RPC_URL: process.env.NODE_ENV === 'production'
-      ? 'https://soroban-rpc.mainnet.stellar.gateway.fm'
-      : 'https://soroban-testnet.stellar.org',
+    NEXT_PUBLIC_STELLAR_NETWORK: process.env.NEXT_PUBLIC_STELLAR_NETWORK || 'TESTNET',
+    NEXT_PUBLIC_HORIZON_URL: process.env.NEXT_PUBLIC_HORIZON_URL || 'https://horizon-testnet.stellar.org',
+    NEXT_PUBLIC_SOROBAN_URL: process.env.NEXT_PUBLIC_SOROBAN_URL || 'https://soroban-testnet.stellar.org',
   },
   images: {
-    domains: ['cdn.jsdelivr.net', 'raw.githubusercontent.com']
+    domains: ['cdn.jsdelivr.net', 'raw.githubusercontent.com'],
+    unoptimized: true
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: false,
   }
 }
 

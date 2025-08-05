@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "vercel-build": "next build"
   },
   "dependencies": {
     "@stellar/stellar-sdk": "^13.3.0",
@@ -37,5 +39,8 @@
     "crosschain"
   ],
   "author": "Stellarealize Team",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

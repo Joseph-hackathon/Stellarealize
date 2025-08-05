@@ -1,5 +1,4 @@
 import {
-  Server,
   Keypair,
   Account,
   TransactionBuilder,
@@ -9,7 +8,6 @@ import {
   Memo,
   BASE_FEE,
   Contract,
-  SorobanRpc,
   xdr,
   Address,
   scValToNative,
@@ -17,6 +15,8 @@ import {
   TimeoutInfinite,
   Transaction
 } from '@stellar/stellar-sdk';
+import { HorizonServer as Server } from '@stellar/stellar-sdk/lib/horizon/server';
+import { Server as SorobanServer } from '@stellar/stellar-sdk/lib/rpc';
 
 // Stellar Network Configuration
 export const STELLAR_NETWORKS = {
@@ -24,12 +24,14 @@ export const STELLAR_NETWORKS = {
     networkPassphrase: Networks.TESTNET,
     horizonUrl: 'https://horizon-testnet.stellar.org',
     sorobanUrl: 'https://soroban-testnet.stellar.org',
-    friendbotUrl: 'https://friendbot.stellar.org'
+    friendbotUrl: 'https://friendbot.stellar.org',
+    isTestnet: true
   },
   MAINNET: {
     networkPassphrase: Networks.PUBLIC,
     horizonUrl: 'https://horizon.stellar.org',
-    sorobanUrl: 'https://soroban-rpc.mainnet.stellar.gateway.fm'
+    sorobanUrl: 'https://soroban-rpc.mainnet.stellar.gateway.fm',
+    isTestnet: false
   }
 };
 
@@ -79,13 +81,13 @@ export interface StellarTransaction {
 
 export class StellarTestnetService {
   private server: Server;
-  private sorobanServer: SorobanRpc.Server;
+  private sorobanServer: SorobanServer;
   private network: StellarNetworkConfig;
 
   constructor(useTestnet: boolean = true) {
     this.network = useTestnet ? STELLAR_NETWORKS.TESTNET : STELLAR_NETWORKS.MAINNET;
     this.server = new Server(this.network.horizonUrl);
-    this.sorobanServer = new SorobanRpc.Server(this.network.sorobanUrl);
+    this.sorobanServer = new SorobanServer(this.network.sorobanUrl);
   }
 
   // Account Management
@@ -123,7 +125,7 @@ export class StellarTestnetService {
         publicKey: account.accountId(),
         balance: account.balances.find(b => b.asset_type === 'native')?.balance || '0',
         sequence: account.sequenceNumber(),
-        subentryCount: account.subentryCount(),
+        subentryCount: account.subentry_count(),
         thresholds: {
           low: account.thresholds().low,
           med: account.thresholds().med,

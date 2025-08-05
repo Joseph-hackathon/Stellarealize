@@ -302,7 +302,7 @@ export class StellarTestnetService {
       const ledger = await this.server.ledgers().order('desc').limit(1).call();
       
       return {
-        ledgerVersion: parseInt(ledger.records[0].sequence),
+        ledgerVersion: Number(ledger.records[0].sequence),
         baseFee: BASE_FEE,
         baseReserve: 1, // Stellar base reserve
         networkPassphrase: this.network.networkPassphrase

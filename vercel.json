@@ -13,11 +13,6 @@
       "NEXT_PUBLIC_STELLAR_NETWORK": "TESTNET"
     }
   },
-  "functions": {
-    "pages/api/**/*.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "redirects": [
     {
       "source": "/app",

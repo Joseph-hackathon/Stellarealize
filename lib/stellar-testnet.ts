@@ -125,22 +125,28 @@ export class StellarTestnetService {
         publicKey: account.accountId(),
         balance: account.balances.find(b => b.asset_type === 'native')?.balance || '0',
         sequence: account.sequenceNumber(),
-        subentryCount: account.subentry_count(),
+        subentryCount: account.subentry_count,
         thresholds: {
-          low: account.thresholds().low,
-          med: account.thresholds().med,
-          high: account.thresholds().high
+          low: account.thresholds.low_threshold,
+          med: account.thresholds.med_threshold,
+          high: account.thresholds.high_threshold
         },
         flags: {
-          authRequired: account.flags().authRequired(),
-          authRevocable: account.flags().authRevocable(),
-          authImmutable: account.flags().authImmutable()
+          authRequired: account.flags.auth_required,
+          authRevocable: account.flags.auth_revocable,
+          authImmutable: account.flags.auth_immutable
         },
-        balances: account.balances.map(balance => ({
-          asset: balance.asset_type === 'native' ? 'XLM' : `${balance.asset_code}:${balance.asset_issuer}`,
-          balance: balance.balance,
-          limit: balance.limit || undefined
-        }))
+        balances: account.balances.map(balance => {
+          let asset = 'XLM';
+          if (balance.asset_type !== 'native' && 'asset_code' in balance) {
+            asset = `${balance.asset_code}:${balance.asset_issuer}`;
+          }
+          return {
+            asset,
+            balance: balance.balance,
+            limit: 'limit' in balance ? balance.limit : undefined
+          };
+        })
       };
     } catch (error) {
       console.error('Account not found:', error);
@@ -201,220 +207,11 @@ export class StellarTestnetService {
         timestamp: new Date().toISOString(),
         transactionHash: response.hash,
         memo: memo,
-        fee: response.feeCharged,
+        fee: BASE_FEE,
         status: 'success'
       };
     } catch (error) {
       console.error('Payment failed:', error);
-      throw error;
-    }
-  }
-
-  // Smart Contract Operations (Soroban)
-  async deployContract(
-    wasmHash: string,
-    deployerSecret: string,
-    initArgs: any[] = []
-  ): Promise<{ contractId: string; transactionHash: string }> {
-    try {
-      const deployerKeypair = Keypair.fromSecret(deployerSecret);
-      const deployerAccount = await this.server.loadAccount(deployerKeypair.publicKey());
-
-      // Create the deploy contract operation
-      const deployContractOp = Operation.deployContract({
-        wasmHash: wasmHash
-      });
-
-      const transaction = new TransactionBuilder(deployerAccount, {
-        fee: BASE_FEE,
-        networkPassphrase: this.network.networkPassphrase
-      })
-        .addOperation(deployContractOp)
-        .setTimeout(TimeoutInfinite)
-        .build();
-
-      transaction.sign(deployerKeypair);
-
-      const response = await this.server.submitTransaction(transaction);
-      
-      // Extract contract ID from the response
-      const contractId = response.resultMetaXdr?.v3()?.sorobanMeta()?.returnVal()?.address()?.contractId()?.toString('hex');
-
-      if (!contractId) {
-        throw new Error('Failed to extract contract ID from transaction response');
-      }
-
-      return {
-        contractId: contractId,
-        transactionHash: response.hash
-      };
-    } catch (error) {
-      console.error('Contract deployment failed:', error);
-      throw error;
-    }
-  }
-
-  async callContract(
-    contractId: string,
-    method: string,
-    args: any[] = [],
-    callerSecret?: string
-  ): Promise<any> {
-    try {
-      const callerKeypair = callerSecret ? Keypair.fromSecret(callerSecret) : Keypair.random();
-      const callerAccount = await this.server.loadAccount(callerKeypair.publicKey());
-
-      // Convert arguments to Stellar XDR format
-      const xdrArgs = args.map(arg => nativeToScVal(arg));
-
-      // Create the invoke contract operation
-      const invokeContractOp = Operation.invokeHostFunction({
-        hostFunction: xdr.HostFunction.hostFunctionTypeInvokeContract(),
-        auth: [],
-        args: xdrArgs
-      });
-
-      const transaction = new TransactionBuilder(callerAccount, {
-        fee: BASE_FEE,
-        networkPassphrase: this.network.networkPassphrase
-      })
-        .addOperation(invokeContractOp)
-        .setTimeout(TimeoutInfinite)
-        .build();
-
-      transaction.sign(callerKeypair);
-
-      const response = await this.server.submitTransaction(transaction);
-      
-      // Parse the result
-      const result = response.resultMetaXdr?.v3()?.sorobanMeta()?.returnVal();
-      if (result) {
-        return scValToNative(result);
-      }
-
-      return null;
-    } catch (error) {
-      console.error('Contract call failed:', error);
-      throw error;
-    }
-  }
-
-  // Cross-Chain Bridge Operations
-  async bridgeToEthereum(
-    stellarAsset: string,
-    amount: string,
-    ethAddress: string,
-    senderSecret: string
-  ): Promise<StellarTransaction> {
-    try {
-      // This would integrate with a bridge contract
-      const bridgeContractId = process.env.STELLAR_BRIDGE_CONTRACT_ID;
-      
-      if (!bridgeContractId) {
-        throw new Error('Bridge contract not configured');
-      }
-
-      const senderKeypair = Keypair.fromSecret(senderSecret);
-      const senderAccount = await this.server.loadAccount(senderKeypair.publicKey());
-
-      // Create bridge transaction
-      const bridgeOp = Operation.invokeHostFunction({
-        hostFunction: xdr.HostFunction.hostFunctionTypeInvokeContract(),
-        auth: [],
-        args: [
-          nativeToScVal(bridgeContractId),
-          nativeToScVal('bridge_to_ethereum'),
-          nativeToScVal(stellarAsset),
-          nativeToScVal(amount),
-          nativeToScVal(ethAddress)
-        ]
-      });
-
-      const transaction = new TransactionBuilder(senderAccount, {
-        fee: BASE_FEE,
-        networkPassphrase: this.network.networkPassphrase
-      })
-        .addOperation(bridgeOp)
-        .setTimeout(TimeoutInfinite)
-        .build();
-
-      transaction.sign(senderKeypair);
-
-      const response = await this.server.submitTransaction(transaction);
-
-      return {
-        id: response.hash,
-        type: 'payment',
-        from: senderKeypair.publicKey(),
-        asset: stellarAsset,
-        amount: amount,
-        timestamp: new Date().toISOString(),
-        transactionHash: response.hash,
-        memo: `Bridge to ETH: ${ethAddress}`,
-        fee: response.feeCharged,
-        status: 'success'
-      };
-    } catch (error) {
-      console.error('Bridge to Ethereum failed:', error);
-      throw error;
-    }
-  }
-
-  async bridgeFromEthereum(
-    ethTxHash: string,
-    stellarAddress: string,
-    recipientSecret: string
-  ): Promise<StellarTransaction> {
-    try {
-      // This would verify the Ethereum transaction and release funds on Stellar
-      const bridgeContractId = process.env.STELLAR_BRIDGE_CONTRACT_ID;
-      
-      if (!bridgeContractId) {
-        throw new Error('Bridge contract not configured');
-      }
-
-      const recipientKeypair = Keypair.fromSecret(recipientSecret);
-      const recipientAccount = await this.server.loadAccount(recipientKeypair.publicKey());
-
-      // Verify and claim bridge transaction
-      const claimOp = Operation.invokeHostFunction({
-        hostFunction: xdr.HostFunction.hostFunctionTypeInvokeContract(),
-        auth: [],
-        args: [
-          nativeToScVal(bridgeContractId),
-          nativeToScVal('claim_from_ethereum'),
-          nativeToScVal(ethTxHash),
-          nativeToScVal(stellarAddress)
-        ]
-      });
-
-      const transaction = new TransactionBuilder(recipientAccount, {
-        fee: BASE_FEE,
-        networkPassphrase: this.network.networkPassphrase
-      })
-        .addOperation(claimOp)
-        .setTimeout(TimeoutInfinite)
-        .build();
-
-      transaction.sign(recipientKeypair);
-
-      const response = await this.server.submitTransaction(transaction);
-
-      return {
-        id: response.hash,
-        type: 'payment',
-        from: 'Bridge Contract',
-        to: stellarAddress,
-        asset: 'XLM',
-        amount: '0', // Amount would be determined by bridge contract
-        timestamp: new Date().toISOString(),
-        transactionHash: response.hash,
-        memo: `Bridge from ETH: ${ethTxHash}`,
-        fee: response.feeCharged,
-        status: 'success'
-      };
-    } catch (error) {
-      console.error('Bridge from Ethereum failed:', error);
       throw error;
     }
   }
@@ -461,7 +258,7 @@ export class StellarTestnetService {
         timestamp: new Date().toISOString(),
         transactionHash: response.hash,
         memo: `Create trading pair: ${sellingAsset.getCode()}/${buyingAsset.getCode()}`,
-        fee: response.feeCharged,
+        fee: BASE_FEE,
         status: 'success'
       };
     } catch (error) {
@@ -481,23 +278,10 @@ export class StellarTestnetService {
   }
 
   // Real-time Data Streaming
-  streamPayments(accountId: string, onPayment: (payment: StellarTransaction) => void): () => void {
+  streamPayments(accountId: string, onPayment: (payment: any) => void): () => void {
     const eventSource = this.server.payments().forAccount(accountId).cursor('now').stream({
       onmessage: (message) => {
-        const payment = message.data;
-        onPayment({
-          id: payment.id,
-          type: payment.type,
-          from: payment.from,
-          to: payment.to,
-          asset: payment.asset,
-          amount: payment.amount,
-          timestamp: payment.created_at,
-          transactionHash: payment.transaction_hash,
-          memo: payment.memo,
-          fee: payment.fee_charged,
-          status: 'success'
-        });
+        onPayment(message);
       }
     });
 
@@ -507,7 +291,7 @@ export class StellarTestnetService {
   streamTrades(onTrade: (trade: any) => void): () => void {
     const eventSource = this.server.trades().cursor('now').stream({
       onmessage: (message) => {
-        onTrade(message.data);
+        onTrade(message);
       }
     });
 
